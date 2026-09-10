@@ -1,0 +1,32 @@
+{
+  "java.configuration.updateBuildConfiguration": "interactive",
+
+  // --- Java: editor IntelliSense ON, AI suggestions OFF ---
+  "[java]": {
+    // the editor's completion list, from the Java language server
+    "editor.quickSuggestions": {
+      "other": "on",
+      "comments": "off",
+      "strings": "off"
+    },
+    // open the list after "." or "("
+    "editor.suggestOnTriggerCharacters": true,
+    "editor.parameterHints.enabled": true,
+    "editor.snippetSuggestions": "inline",
+    "editor.wordBasedSuggestions": "matchingDocuments",
+    "editor.acceptSuggestionOnEnter": "on",
+    "editor.tabCompletion": "on",
+
+    // no ghost text from AI
+    "editor.inlineSuggest.enabled": false
+  },
+
+  // grey inline hints from the Java extension stay off
+  "java.inlayHints.parameterNames.enabled": "none",
+
+  // Copilot off for Java only
+  "github.copilot.enable": {
+    "*": true,
+    "java": false
+  }
+}

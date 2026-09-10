@@ -1,0 +1,11 @@
+# Compiled Java bytecode
+*.class
+**/bin/
+**/build/
+**/target/
+
+# OS-specific hidden files
+.DS_Store
+
+# VS Code specific environment adjustments (Optional to commit, but ignore history files)
+.vscode/.history/
