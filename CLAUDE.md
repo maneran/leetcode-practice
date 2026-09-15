@@ -52,5 +52,6 @@ Java 21, JUnit Jupiter 5.10.2, Surefire 3.2.5.
 Exercises live under `src/main/java/com/leetcode/stage<N>/level<M>/`.
 Exercises saved for later live in `parked/` — Maven ignores that folder.
 
-`.vscode/settings.json` disables all autocomplete for Java on purpose. This is
-practice mode. Do not re-enable it without being asked.
+`.vscode/settings.json` keeps Java IntelliSense on but turns AI inline
+suggestions (Copilot, ghost text) off for Java files. This is practice mode.
+Do not re-enable AI suggestions without being asked.

@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>תבניות אלגוריתמיות לראיונות עבודה</title>
+<style>
+@page { size: A4; margin: 16mm 14mm 16mm 14mm; }
+* { box-sizing: border-box; }
+html { font-size: 10.5pt; }
+body {
+  font-family: "Arial Hebrew", "Helvetica Neue", Arial, sans-serif;
+  color: #1a1a1a; line-height: 1.5; margin: 0; direction: rtl;
+}
+h1 { font-size: 22pt; margin: 0 0 4pt; color: #0b3d5c; }
+h2 { font-size: 15pt; margin: 0 0 6pt; color: #0b3d5c; border-bottom: 2px solid #0b3d5c; padding-bottom: 3pt; }
+h2 .en { font-family: Menlo, Consolas, monospace; font-size: 11pt; color: #555; direction: ltr; unicode-bidi: isolate; display: inline-block; margin-inline-start: 8pt; }
+h3 { font-size: 11.5pt; margin: 8pt 0 3pt; color: #124; }
+p { margin: 0 0 5pt; }
+ul, ol { margin: 0 0 5pt; padding-inline-start: 16pt; }
+li { margin-bottom: 2pt; }
+.subtitle { color: #555; margin-bottom: 10pt; }
+.pattern { page-break-inside: avoid; break-inside: avoid; margin-bottom: 12pt; }
+.pattern:nth-of-type(2n) { page-break-before: auto; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; }
+.box { border: 1px solid #cfd8e3; border-radius: 4pt; padding: 6pt 8pt; background: #f7f9fc; }
+.box h3 { margin-top: 0; }
+.complex { border-color: #b7d6b7; background: #f3faf3; }
+.trade { border-color: #e6cfa0; background: #fdf8ee; }
+.kid { border-color: #c9c2e8; background: #f6f4fc; }
+.ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-family: Menlo, Consolas, monospace; font-size: 9.5pt; background: #eef1f5; padding: 0 3pt; border-radius: 2pt; }
+pre { direction: ltr; text-align: left; font-family: Menlo, Consolas, monospace; font-size: 8.6pt; line-height: 1.35;
+  background: #f1f3f6; border: 1px solid #d8dde5; border-radius: 4pt; padding: 6pt 8pt; margin: 4pt 0 6pt; white-space: pre; overflow: hidden; }
+table { border-collapse: collapse; width: 100%; font-size: 9.5pt; margin: 4pt 0 8pt; }
+th, td { border: 1px solid #c9d1dc; padding: 3pt 6pt; text-align: right; vertical-align: top; }
+th { background: #e4ebf3; }
+td.c { direction: ltr; text-align: left; font-family: Menlo, Consolas, monospace; font-size: 9pt; }
+.toc { columns: 2; column-gap: 20pt; }
+.toc ol { margin: 0; }
+.cheat table.cs { font-size: 7.6pt; line-height: 1.25; }
+.cheat table.cs th, .cheat table.cs td { padding: 2pt 3pt; }
+.cheat table.cs td.c { font-size: 7.2pt; white-space: nowrap; }
+.cheat h2 { margin-bottom: 2pt; }
+.cheat .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6pt; font-size: 8.2pt; }
+.cheat .grid3 h3 { font-size: 9.5pt; margin: 0 0 2pt; }
+.cheat .grid3 p, .cheat .grid3 li { margin: 0 0 2pt; }
+.cheat .ltrline { direction: ltr; text-align: left; font-family: Menlo, Consolas, monospace; font-size: 8.5pt; }
+.page-break { page-break-before: always; break-before: page; }
+.gloss dt { font-weight: bold; margin-top: 5pt; color: #0b3d5c; }
+.gloss dd { margin: 0 0 3pt; }
+.note { font-size: 9.5pt; color: #444; }
+footer { font-size: 8.5pt; color: #777; margin-top: 12pt; border-top: 1px solid #ddd; padding-top: 4pt; }
+</style>
+</head>
+<body>
+
+<h1>תבניות אלגוריתמיות לראיונות עבודה</h1>
+<p class="subtitle">שש עשרה התבניות שחוזרות ברוב שאלות הקוד. לכל תבנית: הסבר פשוט, מתי משתמשים, סיבוכיות עם הנימוק, ומחירים נסתרים. מונחים מסומנים בכוכבית (*) מוסברים במילון בסוף המסמך.</p>
+
+<div class="cheat">
+<h2>דף מרוכז — עמוד אחד לפני הראיון</h2>
+<p class="note">שורה לכל תבנית: מה מזהה אותה בשאלה, מה המחיר, ומה הטעות שמפילה אנשים. הפירוט המלא בעמודים הבאים.</p>
+<table class="cs">
+<tr><th>תבנית</th><th>רמז בשאלה</th><th>הרעיון בשורה</th><th>זמן</th><th>מקום</th><th>המלכודת</th></tr>
+<tr><td>1. שני מצביעים</td><td>מערך ממוין, זוג או שלישייה שסכומם יעד, פלינדרום</td><td>שני אינדקסים מהקצוות, כל אחד זז לכיוון אחד</td><td class="c">O(n)</td><td class="c">O(1)</td><td>חייב מיון. מיון הורס אינדקסים מקוריים</td></tr>
+<tr><td>2. חלון נע</td><td>"תת מערך רציף", "הארוך ביותר", "באורך k"</td><td>ימין מרחיב, שמאל מכווץ בלולאה עד שהתנאי תקין</td><td class="c">O(n)</td><td class="c">O(1)/O(k)</td><td>לא עובד עם מספרים שליליים בסכום. הכיווץ חייב להיות בלולאה</td></tr>
+<tr><td>3. מהיר ואיטי</td><td>רשימה מקושרת, מעגל, איבר אמצעי</td><td>מצביע בקצב 1 ומצביע בקצב 2. נפגשים רק אם יש מעגל</td><td class="c">O(n)</td><td class="c">O(1)</td><td>לבדוק שהמהיר וגם הבא שלו אינם ריקים</td></tr>
+<tr><td>4. חיפוש בינארי</td><td>ממוין, "המינימום שמקיים", לוג n נדרש</td><td>חוצים את הטווח בכל צעד. גם על "מרחב התשובות"</td><td class="c">O(log n)</td><td class="c">O(1)</td><td>לולאה אינסופית ממיד במקום מיד+1. גלישה בחישוב האמצע</td></tr>
+<tr><td>5. סכום מצטבר</td><td>הרבה שאילתות "סכום מ-i עד j", "כמה תת מערכים סכומם k"</td><td>מערך עזר שכל תא בו הוא סכום כל מה שלפניו. שאילתה = חיסור</td><td class="c">O(n) בנייה, O(1) שאילתה</td><td class="c">O(n)</td><td>הקלט חייב להיות קבוע. תא 0 שווה 0 חוסך תנאי קצה</td></tr>
+<tr><td>6. מפת גיבוב</td><td>"ראינו כבר?", תדירויות, אנגרמות, מערך לא ממוין</td><td>מפתח ← ערך בגישה ישירה</td><td class="c">O(1) ממוצע</td><td class="c">O(n)</td><td>אין סדר. מפתח בלי דריסת השוואה וגיבוב נעלם. לא בטוח לחוטים</td></tr>
+<tr><td>7. מיזוג קטעים</td><td>פגישות, חפיפות, זוגות התחלה וסוף</td><td>מיון לפי התחלה, ואז מיזוג עם האחרון בתוצאה</td><td class="c">O(n log n)</td><td class="c">O(n)</td><td>להחליט אם נגיעה בקצה היא חפיפה</td></tr>
+<tr><td>8. מחסנית מונוטונית</td><td>"הבא הגדול יותר", טמפרטורות, היסטוגרמה, מי גשם</td><td>מחסנית של אינדקסים בסדר עולה או יורד. מוציאים כשמגיע גדול יותר</td><td class="c">O(n)</td><td class="c">O(n)</td><td>נראה ריבועי אך כל איבר נכנס ויוצא פעם אחת. לשמור אינדקסים</td></tr>
+<tr><td>9. חיפוש לרוחב</td><td>"מינימום צעדים", "הקצר ביותר", לפי רמות, ללא משקלים</td><td>תור. מסמנים ביקור בכניסה לתור. לולאה פנימית לכל רמה</td><td class="c">O(V+E)</td><td class="c">O(V)</td><td>לא לגרף עם משקלים, שם דייקסטרה. סימון בהוצאה מהתור מנפח</td></tr>
+<tr><td>10. חיפוש לעומק</td><td>איים, רכיבים, כל המסלולים, עצים</td><td>רקורסיה או מחסנית. עד הסוף לפני שמנסים ענף אחר</td><td class="c">O(V+E)</td><td class="c">O(H)</td><td>גלישת מחסנית במטריצות גדולות. לא מוצא מסלול קצר ביותר</td></tr>
+<tr><td>11. נסיגה לאחור</td><td>"כל הצירופים", "כל התמורות", סודוקו, מלכות, n קטן</td><td>בחר, רד ברקורסיה, בטל. הוסף העתק לתוצאה</td><td class="c">O(2ⁿ·n), O(n!·n)</td><td class="c">O(n)</td><td>לשכוח את הביטול. להוסיף את הרשימה החיה במקום העתק</td></tr>
+<tr><td>12. תכנות דינמי</td><td>"כמה דרכים", "המקסימום", תת בעיות שחוזרות</td><td>להגדיר מצב, נוסחת מעבר, בסיס. כל מצב פעם אחת</td><td class="c">מצבים × עבודה</td><td class="c">מצבים</td><td>הגדרת מצב לא מדויקת. לרוב אפשר לצמצם לשורה או שני משתנים</td></tr>
+<tr><td>13. ערימה</td><td>"k הגדולים", חציון בזרם, מיזוג k רשימות</td><td>ערימת מינימום בגודל k. מוציאים את הקטן בכל חריגה</td><td class="c">O(n log k)</td><td class="c">O(k)</td><td>מינימום בשביל "הגדולים". אין מחיקה מהאמצע, אז מחיקה עצלה</td></tr>
+<tr><td>14. איחוד וחיפוש</td><td>קבוצות, "מחוברים?", קשתות שמתווספות</td><td>מערך הורים. כיווץ מסלול ואיחוד לפי גודל</td><td class="c">O(α(n)) ≈ O(1)</td><td class="c">O(n)</td><td>אין ניתוק. לא נותן מסלול, רק כן או לא</td></tr>
+<tr><td>15. מיון טופולוגי</td><td>תלויות, דרישות קדם, סדר ביצוע</td><td>דרגות כניסה. תור של אפסים. מורידים דרגה לשכנים</td><td class="c">O(V+E)</td><td class="c">O(V+E)</td><td>פלט קצר מ-V פירושו מעגל. לא לשכוח כיוון הקשת</td></tr>
+<tr><td>16. חמדני</td><td>תזמון, קפיצות, בחירה מקומית ברורה</td><td>מיון לפי הקריטריון הנכון, ואז מעבר אחד</td><td class="c">O(n log n)</td><td class="c">O(1)</td><td>לא תמיד נכון. דוגמה קטנה ששוברת = תכנות דינמי</td></tr>
+</table>
+
+<div class="grid3">
+<div class="box"><h3>סולם הסיבוכיות</h3>
+<p class="ltrline">O(1) &lt; O(log n) &lt; O(n) &lt; O(n log n) &lt; O(n²) &lt; O(2ⁿ) &lt; O(n!)</p>
+<p class="note">כמאה מיליון פעולות בשנייה. n = 10⁶: ריבועי = שעות, n log n = חלקיק שנייה. n עד 20: מעריכי בסדר. n עד 5000: ריבועי בסדר.</p></div>
+<div class="box"><h3>שלוש שאלות לפני קוד</h3>
+<ul>
+<li>הקלט ממוין? אם כן: שני מצביעים או חיפוש בינארי.</li>
+<li>המילה "רציף" מופיעה? חלון נע או סכום מצטבר.</li>
+<li>"כל" מול "המיטבי"? כל = נסיגה לאחור. מיטבי = תכנות דינמי או חמדני.</li>
+</ul></div>
+<div class="box"><h3>המשפטים לסיבוכיות</h3>
+<ul>
+<li>"כל איבר נכנס ויוצא פעם אחת" — ליניארי מצטבר.</li>
+<li>"כל צעד חוצה את הטווח" — לוגריתמי.</li>
+<li>"מספר המצבים כפול העבודה למצב" — תכנות דינמי.</li>
+<li>"עלים בעץ הרקורסיה כפול עבודה בעלה" — נסיגה לאחור.</li>
+</ul></div>
+</div>
+</div>
+
+<div class="page-break"></div>
+
+<section class="pattern">
+<h2>1. שני מצביעים <span class="en">Two Pointers</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>דמיינו שורה של ילדים מסודרים לפי גובה. שני חברים עומדים, אחד בקצה הימני ואחד בקצה השמאלי, ומתקרבים זה לזה. בכל צעד הם מסתכלים על שני הילדים שלידם ומחליטים מי זז. כך עוברים על כל השורה פעם אחת במקום לבדוק כל זוג אפשרי.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>מערך ממוין ומחפשים זוג שסכומו יעד.</li>
+<li>הסרת כפילויות במקום* ממערך ממוין.</li>
+<li>בדיקת פלינדרום, היפוך מערך.</li>
+<li>מיכל המים הגדול ביותר, שלישיות שסכומן אפס.</li>
+<li>מיזוג שני מערכים ממוינים.</li>
+</ul>
+<p class="note">הרמז המרכזי: הקלט ממוין, או שאפשר למיין אותו קודם.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: <span class="ltr">O(n)</span>. כל מצביע זז רק לכיוון אחד ולעולם לא חוזר. שני המצביעים יחד עושים לכל היותר n צעדים עד שהם נפגשים. אם צריך למיין קודם: <span class="ltr">O(n log n)</span>.</p>
+<p>מקום: <span class="ltr">O(1)</span>. שומרים רק שני אינדקסים, בלי תלות בגודל הקלט.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>עובד רק כשיש סדר. על מערך לא ממוין צריך למיין קודם, וזה עולה יותר מהמעבר עצמו.</li>
+<li>מחזיר זוג אחד או ספירה. אם צריך את כל הזוגות, יכולים להיות <span class="ltr">O(n²)</span> זוגות, ואז אין דרך לחסוך.</li>
+<li>מיון משנה את המערך המקורי. אם צריך את האינדקסים המקוריים, מפת גיבוב עדיפה.</li>
+</ul></div>
+<pre>int l = 0, r = arr.length - 1;
+while (l &lt; r) {
+    int sum = arr[l] + arr[r];
+    if (sum == target) return new int[]{l, r};
+    if (sum &lt; target) l++;   // need a bigger value: move the small side
+    else r--;                  // need a smaller value: move the big side
+}</pre>
+</section>
+
+<section class="pattern">
+<h2>2. חלון נע <span class="en">Sliding Window</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>יש לכם מסגרת של תמונה ומחליקים אותה על שורה ארוכה של מספרים. כשהמסגרת זזה צעד ימינה, מספר אחד נכנס מצד אחד ומספר אחד יוצא מהצד השני. במקום לחשב הכל מחדש, רק מוסיפים את החדש ומחסירים את הישן.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>חלון קבוע: הסכום המקסימלי של k איברים רצופים.</li>
+<li>חלון משתנה: התת מחרוזת הארוכה ביותר בלי תווים חוזרים.</li>
+<li>התת מערך הקצר ביותר שסכומו לפחות s.</li>
+<li>אנגרמות בתוך מחרוזת, עד k תווים שונים.</li>
+</ul>
+<p class="note">הרמז: המילים "רציף", "תת מערך", "תת מחרוזת" יחד עם "הארוך ביותר", "הקצר ביותר" או "באורך k".</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: <span class="ltr">O(n)</span>. הקצה הימני מתקדם n פעמים. הקצה השמאלי מתקדם גם הוא לכל היותר n פעמים בסך הכל לאורך כל הריצה. סך הכל <span class="ltr">2n</span> צעדים. זה ניתוח מצטבר*, לא לכל צעד בנפרד.</p>
+<p>מקום: <span class="ltr">O(1)</span> לחלון מספרי. <span class="ltr">O(k)</span> כשצריך מפת תדירויות, כאשר k הוא גודל האלפבית (לאותיות אנגליות: 26, ולכן קבוע).</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>דורש שהתנאי יהיה "מונוטוני"*: כשהחלון גדל, התנאי רק מתחזק או רק נחלש. סכום עם מספרים שליליים שובר את זה, ואז צריך סכום מצטבר עם מפת גיבוב.</li>
+<li>הטעות הנפוצה: לכווץ את החלון פעם אחת בלבד במקום בלולאה. הכיווץ חייב להיות בלולאה פנימית.</li>
+<li>קל להתבלבל בין "הקצה נכלל" ל"הקצה לא נכלל". להחליט מראש ולכתוב הערה.</li>
+</ul></div>
+<pre>int left = 0, best = 0;
+Map&lt;Character, Integer&gt; count = new HashMap&lt;&gt;();
+for (int right = 0; right &lt; s.length(); right++) {
+    count.merge(s.charAt(right), 1, Integer::sum);
+    while (count.get(s.charAt(right)) &gt; 1) {          // shrink until valid
+        count.merge(s.charAt(left), -1, Integer::sum);
+        left++;
+    }
+    best = Math.max(best, right - left + 1);
+}</pre>
+</section>
+
+<section class="pattern">
+<h2>3. מצביע מהיר ואיטי <span class="en">Fast &amp; Slow Pointers</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>שני רצים במסלול. אחד רץ בקצב כפול מהשני. אם המסלול הוא קו ישר, המהיר מגיע לסוף ראשון וזהו. אם המסלול הוא מעגל, המהיר יקיף ויתפוס את האיטי מאחור. כך יודעים אם יש מעגל בלי לזכור איפה כבר היינו.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>זיהוי מעגל ברשימה מקושרת ומציאת נקודת ההתחלה שלו.</li>
+<li>האיבר האמצעי של רשימה במעבר אחד.</li>
+<li>"מספר שמח", זיהוי מחזור בסדרה שכל איבר נגזר מהקודם.</li>
+<li>האיבר הכפול במערך של מספרים בטווח 1 עד n.</li>
+</ul>
+<p class="note">הרמז: רשימה מקושרת, או פונקציה שמובילה מכל ערך לערך הבא.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: <span class="ltr">O(n)</span>. בלי מעגל, המהיר מגיע לסוף אחרי <span class="ltr">n/2</span> צעדים. עם מעגל באורך c, אחרי שהאיטי נכנס למעגל, המרחק ביניהם קטן באחד בכל צעד, ולכן הם נפגשים תוך לכל היותר c צעדים.</p>
+<p>מקום: <span class="ltr">O(1)</span>. שני מצביעים בלבד. זה היתרון הגדול על הפתרון הפשוט עם קבוצה של "כבר ביקרנו", שדורש <span class="ltr">O(n)</span> מקום.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>הקוד קצר אך עדין. שכחה של בדיקת <span class="ltr">fast.next != null</span> גורמת לחריגה.</li>
+<li>מציאת תחילת המעגל דורשת שלב שני שקשה להסביר בראיון. כדאי לתרגל את ההוכחה.</li>
+<li>קבוצה של "כבר ביקרנו" פשוטה יותר ומקובלת כשמותר להשתמש בזיכרון נוסף.</li>
+</ul></div>
+<pre>ListNode slow = head, fast = head;
+while (fast != null &amp;&amp; fast.next != null) {
+    slow = slow.next;
+    fast = fast.next.next;
+    if (slow == fast) return true;   // cycle
+}
+return false;</pre>
+</section>
+
+<section class="pattern">
+<h2>4. חיפוש בינארי <span class="en">Binary Search</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>משחק "נחש את המספר" בין 1 ל-1000. במקום לנחש 1, 2, 3, מנחשים 500. אם אומרים "יותר גדול", כל החצי התחתון נזרק. כל ניחוש מוחק חצי מהאפשרויות, ולכן מספיקים 10 ניחושים במקום 1000.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>חיפוש ערך במערך ממוין.</li>
+<li>המופע הראשון או האחרון של ערך, נקודת הכניסה.</li>
+<li>מערך ממוין ומסובב, שיא במערך "הר".</li>
+<li>"חיפוש בינארי על התשובה": המהירות המינימלית לאכול את כל הבננות, הקיבולת המינימלית של הספינה. כשהתשובה היא מספר, והבדיקה "האם x מספיק" היא כן או לא באופן מונוטוני*.</li>
+</ul></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: <span class="ltr">O(log n)</span>. כל איטרציה מקטינה את הטווח פי 2. אחרי k איטרציות נשארו <span class="ltr">n / 2^k</span> איברים. הטווח מגיע לאחד כאשר <span class="ltr">2^k = n</span>, כלומר <span class="ltr">k = log₂ n</span>. עבור מיליון איברים: כ-20 צעדים.</p>
+<p>בחיפוש על התשובה: <span class="ltr">O(n · log(range))</span>, כי כל בדיקה עוברת על הקלט ויש <span class="ltr">log(range)</span> בדיקות.</p>
+<p>מקום: <span class="ltr">O(1)</span> בגרסה איטרטיבית. <span class="ltr">O(log n)</span> בגרסה רקורסיבית בגלל מחסנית הקריאות*.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>הקלט חייב להיות ממוין. מיון עולה <span class="ltr">O(n log n)</span>, ולכן משתלם רק כשיש הרבה חיפושים או כשהקלט כבר ממוין.</li>
+<li>הטעויות הנפוצות ביותר בראיונות: לולאה אינסופית מ-<span class="ltr">left = mid</span> במקום <span class="ltr">mid + 1</span>, וגלישה* ב-<span class="ltr">(left + right) / 2</span>. הכתיב הבטוח: <span class="ltr">left + (right - left) / 2</span>.</li>
+<li>על רשימה מקושרת אין גישה ישירה לאמצע, ולכן התבנית לא עובדת.</li>
+</ul></div>
+<pre>int lo = 0, hi = arr.length - 1;
+while (lo &lt;= hi) {
+    int mid = lo + (hi - lo) / 2;          // no overflow
+    if (arr[mid] == target) return mid;
+    if (arr[mid] &lt; target) lo = mid + 1;
+    else hi = mid - 1;
+}
+return -1;
+// "search on the answer": lo = min, hi = max; while (lo &lt; hi) { mid; if (ok(mid)) hi = mid; else lo = mid + 1; }</pre>
+</section>
+
+<section class="pattern">
+<h2>5. סכום מצטבר <span class="en">Prefix Sum</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>יש לכם קופת חיסכון ורושמים כל יום כמה כסף יש בה בסך הכל. כששואלים "כמה הכנסת בין יום 5 ליום 9?" לא סופרים מחדש. לוקחים את הרישום של יום 9 ומחסירים את הרישום של יום 4. חישוב אחד במקום חמישה.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>הרבה שאילתות "סכום התת מערך מ-i עד j" על מערך שלא משתנה.</li>
+<li>מספר התת מערכים שסכומם k, בשילוב מפת גיבוב.</li>
+<li>סכום תת מטריצה במטריצה דו ממדית.</li>
+<li>"נקודת שיווי משקל": אינדקס שהסכום משמאלו שווה לסכום מימינו.</li>
+</ul>
+<p class="note">הרמז: "סכום של טווח", "כמה תת מערכים", מספרים שליליים שמונעים חלון נע.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>בנייה: <span class="ltr">O(n)</span> זמן ו-<span class="ltr">O(n)</span> מקום. מעבר אחד, כל תא הוא התא הקודם ועוד האיבר הנוכחי.</p>
+<p>שאילתה: <span class="ltr">O(1)</span>. חיסור אחד: <span class="ltr">prefix[j+1] - prefix[i]</span>.</p>
+<p>סך הכל עבור q שאילתות: <span class="ltr">O(n + q)</span> במקום <span class="ltr">O(n · q)</span> בגישה הישירה.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>הקלט חייב להיות קבוע. אם המערך משתנה בין השאילתות, כל עדכון מחייב בנייה מחדש ב-<span class="ltr">O(n)</span>. אז עוברים למבנה מתקדם יותר (עץ פנוויק או עץ קטעים) עם <span class="ltr">O(log n)</span> לעדכון ולשאילתה.</li>
+<li>עולה זיכרון נוסף בגודל הקלט.</li>
+<li>הטריק של אינדקס 0 שווה 0 (מערך באורך <span class="ltr">n + 1</span>) חוסך בדיקות קצה. בלעדיו הקוד מתמלא בתנאים.</li>
+</ul></div>
+<pre>long[] prefix = new long[n + 1];                 // prefix[0] = 0
+for (int i = 0; i &lt; n; i++) prefix[i + 1] = prefix[i] + arr[i];
+long rangeSum = prefix[j + 1] - prefix[i];       // sum of arr[i..j]
+
+// count subarrays with sum == k (works with negatives)
+Map&lt;Long, Integer&gt; seen = new HashMap&lt;&gt;(Map.of(0L, 1));
+long run = 0; int count = 0;
+for (int x : arr) { run += x; count += seen.getOrDefault(run - k, 0); seen.merge(run, 1, Integer::sum); }</pre>
+</section>
+
+<section class="pattern">
+<h2>6. מפת גיבוב <span class="en">Hash Map / Hash Set</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>ארון עם אלף מגירות. כל חפץ מקבל מספר מגירה לפי השם שלו, בעזרת נוסחה קבועה. כשרוצים למצוא חפץ, מחשבים את המספר וניגשים ישר למגירה. לא צריך לחפש בכל הארון.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>"האם כבר ראינו את זה?" בלי מיון.</li>
+<li>סכום זוג במערך לא ממוין: שומרים מה ראינו, ובודקים אם המשלים קיים.</li>
+<li>ספירת תדירויות: אנגרמות, התו הראשון שלא חוזר, הרוב.</li>
+<li>קיבוץ לפי מפתח: אנגרמות לקבוצות.</li>
+<li>מטמון* של תוצאות, זיכרון בתכנות דינמי.</li>
+</ul>
+<p class="note">בג'אווה: <span class="ltr">HashMap</span>, <span class="ltr">HashSet</span>. כשצריך סדר הכנסה: <span class="ltr">LinkedHashMap</span>. כשצריך מיון לפי מפתח: <span class="ltr">TreeMap</span> עם <span class="ltr">O(log n)</span>.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>הכנסה, חיפוש, מחיקה: <span class="ltr">O(1)</span> בממוצע. פונקציית הגיבוב* מחשבת את המגירה ישירות. הממוצע מניח פיזור טוב של המפתחות.</p>
+<p>במקרה הגרוע: <span class="ltr">O(n)</span> כשכל המפתחות נופלים לאותה מגירה. בג'אווה 8 ומעלה, מגירה עמוסה הופכת לעץ, ולכן המקרה הגרוע הוא <span class="ltr">O(log n)</span>.</p>
+<p>מקום: <span class="ltr">O(n)</span>, כניסה לכל מפתח.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>אין סדר. אם התשובה דורשת סדר, צריך מיון נוסף או מבנה אחר.</li>
+<li>עומס זיכרון גבוה: כל כניסה היא אובייקט, ומספרים נעטפים באובייקטים. למספרים בטווח קטן, מערך של מונים מהיר וזול בהרבה.</li>
+<li>מפתח עם דריסה שגויה של <span class="ltr">equals</span> או <span class="ltr">hashCode</span> שובר את המפה בשקט. מפתח שמשתנה אחרי ההכנסה "נעלם".</li>
+<li>לא בטוח לריבוי חוטים*. ריבוי חוטים דורש <span class="ltr">ConcurrentHashMap</span>.</li>
+</ul></div>
+<pre>Map&lt;Integer, Integer&gt; seen = new HashMap&lt;&gt;();   // value -&gt; index
+for (int i = 0; i &lt; nums.length; i++) {
+    Integer j = seen.get(target - nums[i]);
+    if (j != null) return new int[]{j, i};
+    seen.put(nums[i], i);
+}</pre>
+</section>
+
+<section class="pattern">
+<h2>7. מיזוג קטעים <span class="en">Merge Intervals</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>יש לכם פתקים של פגישות: "מ-9 עד 11", "מ-10 עד 12", "מ-14 עד 15". קודם מסדרים את הפתקים לפי שעת ההתחלה. אחר כך עוברים לפי הסדר: אם הפגישה הבאה מתחילה לפני שהקודמת נגמרת, מדביקים את שני הפתקים לפתק אחד. אחרת, מתחילים פתק חדש.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>מיזוג קטעים חופפים.</li>
+<li>הכנסת קטע חדש לרשימה ממוינת.</li>
+<li>"כמה חדרי ישיבות צריך": מספר החפיפות המקסימלי בו זמנית.</li>
+<li>זמנים פנויים משותפים לכמה עובדים.</li>
+<li>מספר הקטעים שצריך להסיר כדי שלא תהיה חפיפה.</li>
+</ul>
+<p class="note">הרמז: זוגות של התחלה וסוף, המילים "חפיפה", "פגישה", "קטע".</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: <span class="ltr">O(n log n)</span>. המיון שולט. המעבר עצמו הוא <span class="ltr">O(n)</span> כי כל קטע נבדק פעם אחת מול הקטע האחרון בתוצאה.</p>
+<p>מקום: <span class="ltr">O(n)</span> לרשימת התוצאה. המיון בג'אווה על מערך אובייקטים דורש עוד <span class="ltr">O(n)</span> זמני.</p>
+<p>לחדרי ישיבות: ממיינים התחלות וסופים בנפרד, או משתמשים בערימת מינימום של זמני סיום. שניהם <span class="ltr">O(n log n)</span>.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>המיון הכרחי. בלי מיון, כל קטע צריך להיבדק מול כל האחרים: <span class="ltr">O(n²)</span>.</li>
+<li>להחליט מראש אם נגיעה בקצה נחשבת חפיפה. "מ-9 עד 10" ו"מ-10 עד 11" — כן או לא? השאלה קובעת.</li>
+<li>בזרם של קטעים שמגיעים בזמן אמת המיון המוקדם לא אפשרי. אז עוברים ל-<span class="ltr">TreeMap</span> עם <span class="ltr">O(log n)</span> לכל הכנסה.</li>
+</ul></div>
+<pre>Arrays.sort(intervals, (a, b) -&gt; Integer.compare(a[0], b[0]));
+List&lt;int[]&gt; out = new ArrayList&lt;&gt;();
+for (int[] cur : intervals) {
+    if (out.isEmpty() || out.get(out.size() - 1)[1] &lt; cur[0]) out.add(cur);
+    else out.get(out.size() - 1)[1] = Math.max(out.get(out.size() - 1)[1], cur[1]);
+}</pre>
+</section>
+
+<section class="pattern">
+<h2>8. מחסנית מונוטונית <span class="en">Monotonic Stack</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>ילדים נכנסים לתור לפי הסדר, וכל ילד שואל "מי הילד הראשון אחריי שגבוה ממני?". שומרים ערימה של ילדים שעדיין מחכים לתשובה. כשמגיע ילד גבוה, הוא עונה לכל הנמוכים שמחכים בראש הערימה, והם יוצאים. הערימה תמיד מסודרת מהגבוה לנמוך, ולכן מספיק לבדוק את הראש.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>"האיבר הבא הגדול יותר" או "הקטן יותר" לכל איבר.</li>
+<li>טמפרטורות יומיות: כמה ימים עד יום חם יותר.</li>
+<li>המלבן הגדול ביותר בהיסטוגרמה.</li>
+<li>לכידת מי גשם.</li>
+<li>סכום המינימומים של כל התת מערכים.</li>
+</ul>
+<p class="note">הרמז: לכל איבר צריך את "הראשון משמאל או מימין" שמקיים תנאי גודל.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: <span class="ltr">O(n)</span>. הלולאה הפנימית נראית מסוכנת, אבל כל איבר נכנס למחסנית פעם אחת ויוצא ממנה לכל היותר פעם אחת. סך כל ההוצאות לאורך כל הריצה חסום ב-n. זה ניתוח מצטבר*: לצעד בודד יכול להיות יקר, אבל הממוצע הוא קבוע.</p>
+<p>מקום: <span class="ltr">O(n)</span> למחסנית במקרה הגרוע (מערך ממוין שכולו נכנס).</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>קשה לזהות בפעם הראשונה. הפתרון הישיר עם שתי לולאות הוא <span class="ltr">O(n²)</span> ומפתה.</li>
+<li>עדינות בשוויון: "גדול או שווה" מול "גדול ממש" משנה את התשובה ואת התנאי בלולאה.</li>
+<li>לשמור אינדקסים ולא ערכים. האינדקס נותן גם את המרחק וגם את הערך.</li>
+</ul></div>
+<pre>int[] next = new int[n]; Arrays.fill(next, -1);
+Deque&lt;Integer&gt; stack = new ArrayDeque&lt;&gt;();      // indexes, values decreasing
+for (int i = 0; i &lt; n; i++) {
+    while (!stack.isEmpty() &amp;&amp; arr[stack.peek()] &lt; arr[i]) next[stack.pop()] = i;
+    stack.push(i);
+}</pre>
+</section>
+
+<section class="pattern">
+<h2>9. חיפוש לרוחב <span class="en">BFS — Breadth-First Search</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>זורקים אבן לבריכה. הגלים מתפשטים במעגלים: קודם כל מה שבמרחק צעד אחד, אחר כך כל מה שבמרחק שני צעדים, וכן הלאה. הפעם הראשונה שגל נוגע במטרה, זה בהכרח המסלול הקצר ביותר, כי כל מה שקרוב יותר כבר נבדק.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>המסלול הקצר ביותר בגרף* שכל הקשתות בו שוות (ללא משקלים).</li>
+<li>מעבר על עץ לפי רמות, סדר זיגזג, הצד הימני של העץ.</li>
+<li>תפוזים רקובים, מרחק מהאפס הקרוב במטריצה. הרבה נקודות התחלה בו זמנית.</li>
+<li>סולם מילים: כמה החלפות מינימליות ממילה למילה.</li>
+</ul>
+<p class="note">הרמז: "המינימום צעדים", "הקצר ביותר", "לפי רמות".</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: <span class="ltr">O(V + E)</span>. כל צומת נכנס לתור פעם אחת (בזכות סימון "ביקרנו"), וכל קשת נבדקת פעם אחת מכל צד. במטריצה של <span class="ltr">m × n</span>: <span class="ltr">O(m · n)</span>, כי לכל תא יש לכל היותר 4 שכנים.</p>
+<p>מקום: <span class="ltr">O(V)</span> לתור ולקבוצת הביקורים. בעץ מלא, הרמה האחרונה מכילה כמחצית מהצמתים, ולכן התור יכול להיות גדול מאוד.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>לא מתאים לגרף עם משקלים שונים. שם צריך את דייקסטרה, שהוא חיפוש לרוחב עם ערימה במקום תור, ב-<span class="ltr">O(E log V)</span>.</li>
+<li>לסמן "ביקרנו" בזמן ההכנסה לתור, לא בזמן ההוצאה. אחרת אותו צומת נכנס כמה פעמים והזמן מתנפח.</li>
+<li>צורך יותר זיכרון מחיפוש לעומק בגרפים רחבים.</li>
+<li>לספור רמות: לעבד את כל התור הנוכחי בלולאה פנימית לפני שעוברים לרמה הבאה.</li>
+</ul></div>
+<pre>Queue&lt;int[]&gt; q = new ArrayDeque&lt;&gt;(); boolean[][] seen = new boolean[m][n];
+q.add(start); seen[start[0]][start[1]] = true;
+int dist = 0;
+while (!q.isEmpty()) {
+    for (int size = q.size(); size &gt; 0; size--) {          // one whole level
+        int[] cur = q.poll();
+        if (isTarget(cur)) return dist;
+        for (int[] d : DIRS) { int r = cur[0] + d[0], c = cur[1] + d[1];
+            if (inBounds(r, c) &amp;&amp; !seen[r][c] &amp;&amp; open(r, c)) { seen[r][c] = true; q.add(new int[]{r, c}); } }
+    }
+    dist++;
+}</pre>
+</section>
+
+<section class="pattern">
+<h2>10. חיפוש לעומק <span class="en">DFS — Depth-First Search</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>מבוך. הולכים במסדרון עד הסוף. אם זה מבוי סתום, חוזרים צעד אחד ומנסים פנייה אחרת. מסמנים בגיר כל מקום שכבר היינו בו, כדי לא להסתובב במעגלים. בסוף עוברים על כל המבוך, אבל תמיד עד הסוף של מסלול אחד לפני שמנסים מסלול אחר.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>מספר האיים במטריצה, גודל האי הגדול ביותר.</li>
+<li>רכיבי קשירות* בגרף, זיהוי מעגל.</li>
+<li>עומק עץ, האם עץ מאוזן, סכום מסלול, האב המשותף הנמוך ביותר.</li>
+<li>כל המסלולים מנקודה לנקודה.</li>
+<li>שכפול גרף, סריקת עץ בסדר תחילי, תוכי או סופי.</li>
+</ul>
+<p class="note">הרמז: "כל", "האם קיים", עצים כמעט תמיד, "רכיב", "אי".</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: <span class="ltr">O(V + E)</span>. כל צומת מבוקר פעם אחת, כל קשת נבדקת פעם אחת מכל כיוון. בעץ: <span class="ltr">O(n)</span>, כי <span class="ltr">E = n - 1</span>.</p>
+<p>מקום: <span class="ltr">O(H)</span> כאשר H הוא העומק המקסימלי, בגלל מחסנית הקריאות*. בעץ מאוזן <span class="ltr">H = log n</span>. בעץ מנוון (שרשרת) או במטריצה גדולה <span class="ltr">H = n</span>, ואז ברקורסיה יש סכנת גלישת מחסנית*.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>רקורסיה קצרה ואלגנטית, אבל מחסנית הג'אווה מוגבלת (בדרך כלל כמה אלפי קריאות). מטריצה של 1000 על 1000 עם אי אחד גדול מפילה את התוכנית. הפתרון: מחסנית מפורשת.</li>
+<li>לא מוצא את המסלול הקצר ביותר. הוא מוצא מסלול כלשהו.</li>
+<li>סימון "ביקרנו" חובה בגרף עם מעגלים. בעץ אפשר לוותר.</li>
+<li>שינוי הקלט כסימון (למשל להפוך 1 ל-0 במטריצה) חוסך זיכרון, אבל הורס את הקלט. לציין זאת בראיון.</li>
+</ul></div>
+<pre>void dfs(char[][] g, int r, int c) {
+    if (r &lt; 0 || c &lt; 0 || r &gt;= g.length || c &gt;= g[0].length || g[r][c] != '1') return;
+    g[r][c] = '0';                                   // mark visited (mutates input)
+    dfs(g, r + 1, c); dfs(g, r - 1, c); dfs(g, r, c + 1); dfs(g, r, c - 1);
+}</pre>
+</section>
+
+<section class="pattern">
+<h2>11. נסיגה לאחור <span class="en">Backtracking</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>מרכיבים תלבושת מארון. לוקחים חולצה, אחר כך מכנסיים, אחר כך נעליים. אם הנעליים לא מתאימות, מורידים אותן ומנסים זוג אחר. אם שום נעליים לא מתאימות, מורידים גם את המכנסיים ומנסים מכנסיים אחרים. ככה עוברים על כל התלבושות האפשריות, אבל מפסיקים מוקדם כשמשהו לא מתאים.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>כל התת קבוצות, כל התמורות, כל הצירופים שסכומם יעד.</li>
+<li>N מלכות, סודוקו, חלוקה לפלינדרומים.</li>
+<li>חיפוש מילה במטריצת אותיות.</li>
+<li>יצירת סוגריים תקינים.</li>
+</ul>
+<p class="note">הרמז: "כל האפשרויות", "כל הדרכים", "האם קיים סידור". התשובה עצמה גדולה מעריכית.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: תלוי בגודל מרחב החיפוש. תת קבוצות: <span class="ltr">O(2ⁿ · n)</span>, יש <span class="ltr">2ⁿ</span> תת קבוצות וכל אחת מועתקת ב-<span class="ltr">O(n)</span>. תמורות: <span class="ltr">O(n! · n)</span>. גיזום* מקטין בפועל אך לא משנה את החסם העליון.</p>
+<p>הדרך לנמק: מספר העלים בעץ הרקורסיה כפול העבודה בכל עלה.</p>
+<p>מקום: <span class="ltr">O(n)</span> לעומק הרקורסיה ולמסלול הנוכחי, בלי לספור את הפלט.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>מעריכי מטבעו. מתאים ל-n קטן (בדרך כלל עד 20). אם n גדול, המראיין מצפה לתכנות דינמי או לחמדני.</li>
+<li>הטעות הקלאסית: לשכוח את שלב ה"ביטול" אחרי הרקורסיה, או להוסיף את הרשימה עצמה לתוצאה במקום העתק שלה.</li>
+<li>כפילויות בקלט דורשות מיון ודילוג על ערכים חוזרים באותה רמה.</li>
+</ul></div>
+<pre>void backtrack(int start, List&lt;Integer&gt; path, List&lt;List&lt;Integer&gt;&gt; out) {
+    out.add(new ArrayList&lt;&gt;(path));                  // copy, not the live list
+    for (int i = start; i &lt; nums.length; i++) {
+        path.add(nums[i]);                             // choose
+        backtrack(i + 1, path, out);                   // explore
+        path.remove(path.size() - 1);                  // un-choose
+    }
+}</pre>
+</section>
+
+<section class="pattern">
+<h2>12. תכנות דינמי <span class="en">Dynamic Programming</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>עולים במדרגות, וכל פעם אפשר לעלות מדרגה אחת או שתיים. כמה דרכים יש להגיע למדרגה 10? במקום לספור מחדש, שמים על כל מדרגה פתק: "אליי אפשר להגיע ב-X דרכים". הפתק של מדרגה 10 הוא הפתק של 9 ועוד הפתק של 8. כל פתק נכתב פעם אחת, ואף חישוב לא חוזר על עצמו.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>"כמה דרכים", "המקסימום", "המינימום", "האם אפשר", כשבעיה גדולה מורכבת מבעיות קטנות זהות שחוזרות.</li>
+<li>מדרגות, מטבעות, תיק גב, תת סדרה עולה הכי ארוכה, תת מחרוזת משותפת, מרחק עריכה.</li>
+<li>הסכום המקסימלי של תת מערך רציף (אלגוריתם קדאן).</li>
+<li>שני תנאים לזיהוי: תת בעיות חופפות* ותת מבנה אופטימלי*.</li>
+</ul>
+<p class="note">שתי גישות: מלמעלה למטה עם זיכרון (רקורסיה ומטמון), ומלמטה למעלה עם טבלה.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: מספר המצבים כפול העבודה למצב. מדרגות: n מצבים, <span class="ltr">O(1)</span> למצב, סך הכל <span class="ltr">O(n)</span>. תיק גב: <span class="ltr">n · W</span> מצבים, <span class="ltr">O(n · W)</span>. מרחק עריכה: <span class="ltr">O(m · n)</span>.</p>
+<p>מקום: כמספר המצבים. לעיתים קרובות אפשר לצמצם: אם מצב תלוי רק בשורה הקודמת, שומרים שתי שורות במקום טבלה שלמה. מדרגות: שני משתנים במקום מערך, <span class="ltr">O(1)</span>.</p>
+<p>מלמעלה למטה מוסיף <span class="ltr">O(depth)</span> למחסנית הקריאות.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>מלמעלה למטה: קל לכתוב מהרקורסיה הטבעית, מחשב רק מצבים נחוצים, אבל מסתכן בגלישת מחסנית ואיטי יותר בגלל קריאות.</li>
+<li>מלמטה למעלה: מהיר ובלי רקורסיה, מאפשר צמצום זיכרון, אבל דורש למצוא את סדר המילוי הנכון ומחשב את כל המצבים.</li>
+<li>קל לטעות בהגדרת המצב. להגיד בקול "מה בדיוק תא <span class="ltr">dp[i]</span> מייצג" לפני שכותבים.</li>
+<li>ניסוח ההגדרה של המצב הוא 80 אחוז מהפתרון. אחריו, נוסחת המעבר ותנאי הבסיס.</li>
+</ul></div>
+<pre>// bottom-up, O(n) time, O(1) space
+int a = 1, b = 1;                       // ways(0), ways(1)
+for (int i = 2; i &lt;= n; i++) { int c = a + b; a = b; b = c; }
+return b;
+
+// top-down with memo
+int ways(int n, int[] memo) {
+    if (n &lt;= 1) return 1;
+    if (memo[n] != 0) return memo[n];
+    return memo[n] = ways(n - 1, memo) + ways(n - 2, memo);
+}</pre>
+</section>
+
+<section class="pattern">
+<h2>13. ערימה <span class="en">Heap / Priority Queue — Top-K</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>ערימה היא קופסה שכל פעם ששואלים "מי הכי קטן?" היא עונה מיד, בלי לחפש. כשמכניסים או מוציאים, היא מסדרת את עצמה מחדש בכמה צעדים בודדים. לא מסודרת עד הסוף, אבל הקטן ביותר תמיד למעלה.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>k האיברים הגדולים או השכיחים ביותר.</li>
+<li>k הנקודות הקרובות למקור.</li>
+<li>מיזוג k רשימות ממוינות.</li>
+<li>החציון בזרם נתונים: שתי ערימות, מקסימום ומינימום.</li>
+<li>תזמון משימות, חדרי ישיבות, דייקסטרה.</li>
+</ul>
+<p class="note">בג'אווה: <span class="ltr">PriorityQueue</span> היא ערימת מינימום. למקסימום: <span class="ltr">Collections.reverseOrder()</span>.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>הכנסה והוצאה: <span class="ltr">O(log k)</span> כאשר k הוא גודל הערימה. הערימה היא עץ בינארי כמעט מלא, גובהו <span class="ltr">log k</span>, והתיקון אחרי שינוי עובר לאורך מסלול אחד מהשורש לעלה.</p>
+<p>הצצה לראש: <span class="ltr">O(1)</span>.</p>
+<p>k הגדולים מתוך n: מחזיקים ערימת מינימום בגודל k. כל איבר נכנס ומוציאים את הקטן. <span class="ltr">O(n log k)</span> זמן, <span class="ltr">O(k)</span> מקום. עדיף על מיון מלא <span class="ltr">O(n log n)</span> כש-k קטן מ-n.</p>
+<p>בניית ערימה מ-n איברים בבת אחת: <span class="ltr">O(n)</span>, לא <span class="ltr">O(n log n)</span>.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>ערימת מינימום עבור "k הגדולים": מפתיע וטועים בו. שומרים את ה-k הגדולים, וזורקים תמיד את הקטן שבהם.</li>
+<li>אין חיפוש יעיל של איבר שרירותי, ואין מחיקה יעילה מהאמצע: <span class="ltr">O(n)</span>. כשצריך את זה, <span class="ltr">TreeMap</span> או "מחיקה עצלה"*.</li>
+<li>אלגוריתם "בחירה מהירה" נותן k הגדולים ב-<span class="ltr">O(n)</span> ממוצע, אך במקום ולא בזרם.</li>
+<li>הסדר בתוך הערימה אינו ממוין. הדפסה שלה לא נותנת רשימה ממוינת.</li>
+</ul></div>
+<pre>PriorityQueue&lt;Integer&gt; heap = new PriorityQueue&lt;&gt;();     // min-heap of size k
+for (int x : nums) {
+    heap.offer(x);
+    if (heap.size() &gt; k) heap.poll();                          // drop the smallest
+}
+return heap.peek();                                            // k-th largest</pre>
+</section>
+
+<section class="pattern">
+<h2>14. איחוד וחיפוש <span class="en">Union-Find (Disjoint Set)</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>בכיתה יש קבוצות של חברים. לכל קבוצה יש "נציג". כדי לדעת אם שני ילדים באותה קבוצה, שואלים כל אחד "מי הנציג שלך?" ומשווים. כששתי קבוצות מתאחדות, הנציג של אחת מצביע על הנציג של השנייה. ובכל פעם ששואלים, מקצרים את השרשרת כדי שבפעם הבאה התשובה תהיה מיידית.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>מספר רכיבי הקשירות בגרף לא מכוון.</li>
+<li>זיהוי מעגל בגרף לא מכוון, "הקשת המיותרת".</li>
+<li>מספר המחוזות, חשבונות עם אותו בעלים.</li>
+<li>עץ פורש מינימלי (קרוסקל).</li>
+<li>שאילתות "האם מחוברים" שמגיעות בזרם, כשהגרף רק גדל.</li>
+</ul>
+<p class="note">הרמז: "קבוצות", "מחוברים", "איחוד", קשתות שמתווספות עם הזמן.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>עם שתי האופטימיזציות (כיווץ מסלול ואיחוד לפי גודל או דרגה): כל פעולה היא <span class="ltr">O(α(n))</span>, פונקציית אקרמן ההפוכה*. לכל n מעשי הערך קטן מ-5, ולכן מתייחסים לזה כקבוע.</p>
+<p>בלי אופטימיזציות: <span class="ltr">O(n)</span> לפעולה במקרה הגרוע (שרשרת).</p>
+<p>בנייה: <span class="ltr">O(n)</span> זמן ומקום למערך ההורים.</p>
+<p>סך הכל עבור E קשתות: <span class="ltr">O(E · α(n))</span>, בפועל <span class="ltr">O(E)</span>.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>תומך רק באיחוד. אין "ניתוק" יעיל. אם קשתות נמחקות, המבנה לא מתאים.</li>
+<li>לא נותן מסלול, רק "כן או לא". למסלול צריך חיפוש לרוחב או לעומק.</li>
+<li>חיפוש לעומק עושה את אותה עבודה על גרף סטטי באותו זמן, ופשוט יותר להסביר. איחוד וחיפוש מנצח כשהקשתות מגיעות בהדרגה.</li>
+<li>ניתוח הסיבוכיות קשה להוכחה. בראיון מספיק להגיד "כמעט קבוע בזכות כיווץ מסלול".</li>
+</ul></div>
+<pre>int[] parent, size;
+int find(int x) { return parent[x] == x ? x : (parent[x] = find(parent[x])); }   // path compression
+boolean union(int a, int b) {
+    int ra = find(a), rb = find(b);
+    if (ra == rb) return false;                      // already connected (cycle)
+    if (size[ra] &lt; size[rb]) { int t = ra; ra = rb; rb = t; }
+    parent[rb] = ra; size[ra] += size[rb];           // union by size
+    return true;
+}</pre>
+</section>
+
+<section class="pattern">
+<h2>15. מיון טופולוגי <span class="en">Topological Sort (Kahn's Algorithm)</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>מתלבשים בבוקר: גרביים לפני נעליים, חולצה לפני מעיל. יש כללים של "לפני", אבל לא לכל זוג. מתחילים מכל דבר שאין לו שום דרישה, לובשים אותו, ומוחקים אותו מהדרישות של האחרים. כל פריט שנשאר בלי דרישות נכנס לתור. אם בסוף נשארו פריטים שלא נלבשו, יש מעגל: "נעליים לפני גרביים וגרביים לפני נעליים".</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>לוח קורסים עם דרישות קדם: האם אפשר לסיים, ובאיזה סדר.</li>
+<li>סדר בנייה של מודולים עם תלויות.</li>
+<li>מילון חייזרים: שחזור סדר האותיות ממילים ממוינות.</li>
+<li>זיהוי מעגל בגרף מכוון*.</li>
+<li>שורש מינימלי לעץ (קילוף עלים).</li>
+</ul>
+<p class="note">הרמז: "תלות", "לפני", "דרישת קדם", "סדר ביצוע". הגרף חייב להיות מכוון וללא מעגלים.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>זמן: <span class="ltr">O(V + E)</span>. חישוב דרגות הכניסה עובר על כל הקשתות פעם אחת. אחר כך כל צומת נכנס לתור ויוצא ממנו פעם אחת, וכל קשת יוצאת ממנו מורידה דרגה פעם אחת.</p>
+<p>מקום: <span class="ltr">O(V + E)</span> לרשימת השכנויות*, ועוד <span class="ltr">O(V)</span> למערך הדרגות ולתור.</p>
+<p>בדיקת מעגל: אם מספר הצמתים בפלט קטן מ-V, יש מעגל. בלי עלות נוספת.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>עובד רק על גרף מכוון ללא מעגלים*. מעגל אחד, ואין סדר תקין. זה לא חיסרון, זו התשובה.</li>
+<li>יש בדרך כלל כמה סדרים תקינים. אם השאלה דורשת "הסדר הלקסיקוגרפי הקטן ביותר", מחליפים את התור בערימה: <span class="ltr">O(V log V + E)</span>.</li>
+<li>גרסה רקורסיבית עם חיפוש לעומק קיימת גם היא (סדר סופי הפוך), אך זיהוי המעגל בה דורש שלושה צבעים ומבלבל יותר.</li>
+<li>לרוב השאלה נותנת רשימת זוגות, ובניית הגרף היא חלק מהעבודה. לא לשכוח את כיוון הקשת.</li>
+</ul></div>
+<pre>int[] indeg = new int[n]; List&lt;List&lt;Integer&gt;&gt; adj = ...;
+for (int[] e : edges) { adj.get(e[0]).add(e[1]); indeg[e[1]]++; }   // e[0] before e[1]
+Queue&lt;Integer&gt; q = new ArrayDeque&lt;&gt;();
+for (int i = 0; i &lt; n; i++) if (indeg[i] == 0) q.add(i);
+List&lt;Integer&gt; order = new ArrayList&lt;&gt;();
+while (!q.isEmpty()) {
+    int u = q.poll(); order.add(u);
+    for (int v : adj.get(u)) if (--indeg[v] == 0) q.add(v);
+}
+boolean hasCycle = order.size() &lt; n;</pre>
+</section>
+
+<section class="pattern">
+<h2>16. חמדני <span class="en">Greedy</span></h2>
+<div class="box kid"><h3>ההסבר הפשוט</h3>
+<p>נותנים עודף עם מטבעות של 10, 5 ו-1. תמיד לוקחים את המטבע הגדול ביותר שנכנס, ולא חושבים קדימה. עם המטבעות האלה זה תמיד נותן הכי מעט מטבעות. אבל עם מטבעות של 1, 3 ו-4, בשביל 6 החמדן ייתן 4 ועוד 1 ועוד 1, בעוד שהתשובה הנכונה היא 3 ועוד 3. חמדני עובד רק כשהבחירה הטובה עכשיו לא הורסת את העתיד.</p></div>
+<div class="grid">
+<div class="box"><h3>מתי משתמשים</h3>
+<ul>
+<li>תזמון: מקסימום פגישות בלי חפיפה, בוחרים תמיד את זו שמסתיימת ראשונה.</li>
+<li>משחק הקפיצות: האם אפשר להגיע לסוף, ומינימום קפיצות.</li>
+<li>תחנות דלק, חלוקת עוגיות, בלוני חצים.</li>
+<li>מניה: קנייה ומכירה, רווח מקסימלי.</li>
+<li>קידוד הופמן, דייקסטרה, קרוסקל, כולם חמדניים בבסיסם.</li>
+</ul>
+<p class="note">הרמז: "המקסימום או המינימום" כשיש כלל מיון או בחירה מקומית ברור.</p></div>
+<div class="box complex"><h3>סיבוכיות</h3>
+<p>בדרך כלל <span class="ltr">O(n log n)</span> בגלל מיון מקדים, ואחריו מעבר <span class="ltr">O(n)</span>. אם אין צורך במיון (קפיצות, מניה): <span class="ltr">O(n)</span>.</p>
+<p>מקום: <span class="ltr">O(1)</span> מעבר למיון. זה היתרון הגדול על תכנות דינמי, שדורש טבלה.</p>
+<p>הניתוח קל. הקושי הוא ההוכחה שהבחירה החמדנית נכונה. שיטת ההוכחה: "טיעון החלפה", מראים שכל פתרון אופטימלי אפשר להפוך לחמדני בלי להרע אותו.</p></div>
+</div>
+<div class="box trade"><h3>מחירים נסתרים</h3>
+<ul>
+<li>מהיר ופשוט, אבל לא תמיד נכון. בעיית המטבעות עם 1, 3 ו-4 היא הדוגמה הקלאסית. כשלא בטוחים, תכנות דינמי הוא הבחירה הבטוחה.</li>
+<li>בראיון, לומר את הבחירה החמדנית בקול ולתת דוגמה נגדית קטנה או נימוק קצר. פתרון חמדני בלי הצדקה נראה כמו ניחוש.</li>
+<li>כלל אצבע: אם דוגמה קטנה שוברת את החמדן, זו בעיית תכנות דינמי.</li>
+</ul></div>
+<pre>// max non-overlapping intervals: pick the one that ends first
+Arrays.sort(intervals, (a, b) -&gt; Integer.compare(a[1], b[1]));
+int count = 0, end = Integer.MIN_VALUE;
+for (int[] it : intervals) if (it[0] &gt;= end) { count++; end = it[1]; }
+
+// jump game: furthest reachable index
+int reach = 0;
+for (int i = 0; i &lt;= reach &amp;&amp; i &lt; nums.length; i++) reach = Math.max(reach, i + nums[i]);
+return reach &gt;= nums.length - 1;</pre>
+</section>
+
+<div class="page-break"></div>
+
+
+<div class="box">
+<h3>סדר עבודה בראיון</h3>
+<ol>
+<li>לחזור על השאלה במילים שלכם ולשאול על קצוות: קלט ריק, כפילויות, מספרים שליליים, גודל הקלט.</li>
+<li>להגיד את הפתרון הישיר ואת הסיבוכיות שלו. זה מוכיח הבנה ונותן נקודת ייחוס.</li>
+<li>לזהות את התבנית לפי הרמזים בטבלה שבעמוד הראשון, ולהגיד למה היא מתאימה.</li>
+<li>לכתוב קוד. לדבר תוך כדי. שמות ברורים, בדיקות קצה בהתחלה.</li>
+<li>להריץ דוגמה קטנה ביד. אחת רגילה, אחת קצה.</li>
+<li>לסכם: זמן, מקום, ומה היה אפשר לשפר עם עוד זמן.</li>
+</ol>
+</div>
+
+<h2>מילון מונחים</h2>
+<dl class="gloss">
+
+<dt>סימון O גדול</dt>
+<dd>דרך לתאר כמה מהר גדל זמן הריצה כשהקלט גדל, בלי להתעסק בקבועים. <span class="ltr">O(n)</span> אומר: אם הקלט גדל פי 2, הזמן גדל בערך פי 2. <span class="ltr">O(n²)</span> אומר: פי 4. <span class="ltr">O(log n)</span> אומר: הזמן גדל בצעד אחד בלבד. הסדר מהמהיר לאיטי: <span class="ltr">O(1) &lt; O(log n) &lt; O(n) &lt; O(n log n) &lt; O(n²) &lt; O(2ⁿ) &lt; O(n!)</span>. כלל אצבע: מחשב עושה כמאה מיליון פעולות פשוטות בשנייה. אם n הוא מיליון, <span class="ltr">O(n²)</span> הוא טריליון פעולות, כלומר שעות. <span class="ltr">O(n log n)</span> הוא כעשרים מיליון, כלומר חלקיק שנייה.</dd>
+
+<dt>ניתוח מצטבר (אמורטיזציה)</dt>
+<dd>לפעמים צעד בודד יקר, אבל הצעדים היקרים נדירים. במקום לשאול "כמה עולה הצעד הגרוע" שואלים "כמה עולים כל הצעדים ביחד, חלקי מספר הצעדים". דוגמה: במחסנית מונוטונית, איבר אחד יכול לגרום להוצאה של אלף איברים, אבל כל איבר יוצא רק פעם אחת בחייו, ולכן סך כל ההוצאות הוא n. דוגמה נוספת: הגדלת מערך דינמי פי 2 כשהוא מתמלא. ההעתקה יקרה, אבל קורית רק אחת ל-n הכנסות.</dd>
+
+<dt>מונוטוני</dt>
+<dd>הולך רק בכיוון אחד: רק עולה או רק יורד, בלי לחזור. חלון נע עובד רק כשהתנאי מונוטוני: אם החלון "טוב", חלון קטן יותר בתוכו גם טוב. חיפוש בינארי על התשובה עובד רק כשהבדיקה מונוטונית: אם x מספיק, כל ערך גדול מ-x גם מספיק.</dd>
+
+<dt>במקום</dt>
+<dd>אלגוריתם שלא מקצה זיכרון נוסף בגודל הקלט. הוא משנה את הקלט עצמו ומשתמש בכמה משתנים בודדים. היתרון: מקום <span class="ltr">O(1)</span>. המחיר: הקלט המקורי נהרס.</dd>
+
+<dt>מחסנית הקריאות</dt>
+<dd>כשמתודה קוראת למתודה, המחשב שומר "איפה הייתי" בערימת פתקים. כל קריאה רקורסיבית מוסיפה פתק. הפתק נזרק כשהמתודה מסתיימת. לכן רקורסיה בעומק n צורכת <span class="ltr">O(n)</span> זיכרון גם אם לא הקצינו שום מערך. בג'אווה המחסנית מוגבלת, בדרך כלל בין 512 קילובייט למגה אחד, שזה כמה אלפי עד כמה עשרות אלפי קריאות.</dd>
+
+<dt>גלישת מחסנית</dt>
+<dd>שגיאת <span class="ltr">StackOverflowError</span>. קורית כשהרקורסיה עמוקה מדי והמחסנית מתמלאה. הפתרון: להחליף רקורסיה בלולאה עם מחסנית מפורשת מסוג <span class="ltr">ArrayDeque</span>, שנמצאת בערימת הזיכרון הרגילה ואינה מוגבלת כך.</dd>
+
+<dt>גלישה מספרית</dt>
+<dd>מספר שלם בג'אווה מוגבל לכ-2.1 מיליארד. חיבור שני מספרים גדולים חורג מהגבול, והתוצאה "מתגלגלת" למספר שלילי בלי שגיאה. לכן במקום <span class="ltr">(lo + hi) / 2</span> כותבים <span class="ltr">lo + (hi - lo) / 2</span>, ובסכומים גדולים משתמשים ב-<span class="ltr">long</span>.</dd>
+
+<dt>פונקציית גיבוב</dt>
+<dd>נוסחה שמקבלת מפתח (מחרוזת, מספר, אובייקט) ומחזירה מספר. המספר קובע באיזו "מגירה" המפתח יושב. פונקציה טובה מפזרת מפתחות שונים למגירות שונות. שני מפתחות שונים באותה מגירה הם "התנגשות", והיא מאטה את המפה. בג'אווה זו המתודה <span class="ltr">hashCode()</span>, וחייבים לדרוס אותה יחד עם <span class="ltr">equals()</span>: שני אובייקטים שווים חייבים לתת אותו קוד גיבוב.</dd>
+
+<dt>מטמון וזיכרון (ממואיזציה)</dt>
+<dd>שמירת תוצאה של חישוב כדי לא לחשב אותה שוב. בתכנות דינמי מלמעלה למטה, לפני כל חישוב בודקים "כבר חישבתי את זה?" במפה או במערך. אם כן, מחזירים מיד. זה הופך רקורסיה מעריכית לליניארית.</dd>
+
+<dt>תת בעיות חופפות</dt>
+<dd>הרקורסיה הטבעית מגיעה לאותה תת בעיה שוב ושוב. חישוב פיבונאצ'י של 50 מחשב את פיבונאצ'י של 10 מיליוני פעמים. זה הסימן שתכנות דינמי יעזור. אם כל תת בעיה מופיעה פעם אחת (כמו במיון מיזוג), אין מה לשמור.</dd>
+
+<dt>תת מבנה אופטימלי</dt>
+<dd>הפתרון הטוב ביותר לבעיה הגדולה מורכב מפתרונות טובים ביותר לבעיות הקטנות. המסלול הקצר ביותר מ-א' ל-ג' דרך ב' מכיל את המסלול הקצר ביותר מ-א' ל-ב'. בלי התכונה הזאת אי אפשר לבנות את התשובה מלמטה.</dd>
+
+<dt>גיזום</dt>
+<dd>בנסיגה לאחור, לעצור ענף ברגע שברור שהוא לא יוביל לפתרון. למשל, אם הסכום הנוכחי כבר עבר את היעד וכל המספרים חיוביים, אין טעם להמשיך. הגיזום לא משנה את החסם העליון, אבל בפועל מקצר את הריצה מאוד.</dd>
+
+<dt>גרף, צומת, קשת</dt>
+<dd>גרף הוא אוסף של נקודות (צמתים, מסומנים V) וקווים ביניהן (קשתות, מסומנות E). מפת ערים וכבישים היא גרף. גרף מכוון: לכל קשת יש כיוון, כמו רחוב חד סטרי. גרף לא מכוון: אפשר לעבור לשני הכיוונים. מטריצה היא גרף שבו כל תא הוא צומת וכל תא מחובר לארבעת שכניו.</dd>
+
+<dt>גרף מכוון ללא מעגלים</dt>
+<dd>גרף מכוון שאי אפשר בו לצאת מצומת ולחזור אליו. עץ תלויות תקין הוא כזה. רק על גרף כזה יש מיון טופולוגי.</dd>
+
+<dt>רכיב קשירות</dt>
+<dd>קבוצת צמתים שכולם מגיעים זה לזה. "אי" במטריצה הוא רכיב קשירות. גרף יכול להכיל כמה רכיבים שאין ביניהם שום קשת.</dd>
+
+<dt>רשימת שכנויות</dt>
+<dd>הדרך הנפוצה לייצג גרף: לכל צומת, רשימה של שכניו. בג'אווה: <span class="ltr">List&lt;List&lt;Integer&gt;&gt;</span> או <span class="ltr">Map&lt;Integer, List&lt;Integer&gt;&gt;</span>. תופסת <span class="ltr">O(V + E)</span> מקום. החלופה, מטריצת שכנויות, תופסת <span class="ltr">O(V²)</span> ומשתלמת רק בגרפים צפופים.</dd>
+
+<dt>פונקציית אקרמן ההפוכה</dt>
+<dd>מסומנת <span class="ltr">α(n)</span>. פונקציה שגדלה לאט יותר מכל פונקציה שנפגוש בפועל. עבור n בגודל מספר האטומים ביקום, הערך שלה עדיין קטן מ-5. כשאומרים שאיחוד וחיפוש הוא <span class="ltr">O(α(n))</span>, מתכוונים "קבוע לכל דבר ועניין".</dd>
+
+<dt>מחיקה עצלה</dt>
+<dd>ערימה לא יודעת למחוק מהאמצע. במקום למחוק, מסמנים את האיבר כ"מת" במפה נפרדת. כשהאיבר עולה לראש הערימה, בודקים אם הוא מת, ואם כן זורקים אותו וממשיכים. כך שומרים על <span class="ltr">O(log n)</span> לכל פעולה.</dd>
+
+<dt>בטיחות בריבוי חוטים</dt>
+<dd>כשכמה חוטים (תהליכונים) משנים מבנה נתונים בו זמנית, המבנה יכול להישבר בשקט. <span class="ltr">HashMap</span> ו-<span class="ltr">ArrayList</span> אינם בטוחים. בראיון, השאלה "מה קורה אם עשרה חוטים קוראים לזה בו זמנית" היא מסורתית. התשובה: מבנה מקבילי כמו <span class="ltr">ConcurrentHashMap</span>, או נעילה עם <span class="ltr">synchronized</span>, או להפוך את המבנה לבלתי ניתן לשינוי.</dd>
+
+<dt>יציבות מיון</dt>
+<dd>מיון יציב שומר את הסדר המקורי של איברים שווים. <span class="ltr">Arrays.sort</span> על אובייקטים בג'אווה יציב (מיון מיזוג משופר). על מספרים פרימיטיביים אינו יציב (מיון מהיר כפול), אבל לפרימיטיבים זה לא משנה. חשוב כשממיינים לפי מפתח אחד ורוצים לשמור מיון קודם לפי מפתח אחר.</dd>
+
+</dl>
+
+<footer>תבניות אלגוריתמיות לראיונות עבודה. ספטמבר 2026. מיועד להדפסה על A4.</footer>
+</body>
+</html>
