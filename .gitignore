@@ -9,3 +9,6 @@
 
 # VS Code specific environment adjustments (Optional to commit, but ignore history files)
 .vscode/.history/
+
+# Claude Code local state (worktrees)
+.claude/

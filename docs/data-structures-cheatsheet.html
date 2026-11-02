@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="he">
+<head>
+<meta charset="utf-8">
+<title>דף עזר: מבני נתונים בג'אווה</title>
+<style>
+@page { size: A4; margin: 7mm 7mm 7mm 7mm; }
+* { box-sizing: border-box; }
+html { font-size: 9.90pt; }
+body {
+  font-family: "Arial Hebrew", "Helvetica Neue", Arial, sans-serif;
+  color: #1a1a1a; line-height: 1.25; margin: 0; direction: rtl;
+}
+header { display: flex; justify-content: space-between; align-items: baseline;
+  border-bottom: 2px solid #0b3d5c; padding-bottom: 3pt; margin-bottom: 6pt; }
+h1 { font-size: 18.70pt; margin: 0; color: #0b3d5c; }
+.sub { color: #555; font-size: 10.45pt; }
+.c, code { direction: ltr; unicode-bidi: isolate; font-family: Menlo, Consolas, monospace; font-size: 9.02pt; }
+code { background: #eef1f5; padding: 0 1.5pt; border-radius: 2pt; font-size: 8.80pt; }
+
+table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+tr.brk { break-before: page; }
+th, td { border: 1px solid #c9d1dc; padding: 2pt 3pt; vertical-align: top; text-align: right; }
+th { background: #0b3d5c; color: #fff; font-size: 10.45pt; white-space: nowrap; }
+td.c { text-align: left; font-size: 9.24pt; }
+td.name { background: #f3f6fa; }
+td.name .c { display: block; text-align: left; font-weight: bold; font-size: 9.90pt; color: #0b3d5c; }
+td.name small { display: block; color: #444; font-size: 9.02pt; margin-top: 1pt; }
+tr.grp td { background: #e4ebf3; font-weight: bold; color: #0b3d5c; padding: 2pt 4pt; font-size: 11.00pt; }
+tr.grp td span { font-weight: normal; color: #333; font-size: 9.90pt; }
+td.cx { direction: ltr; text-align: left; font-family: Menlo, Consolas, monospace; font-size: 8.80pt; }
+td.cx div { display: grid; grid-template-columns: 42pt 1fr; margin-bottom: 0.5pt; }
+td.cx i { font-style: normal; color: #6b7684; }
+.good { color: #1d7a36; font-weight: bold; }
+.bad { color: #b3261e; font-weight: bold; }
+.warn { color: #b3261e; }
+
+.boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 5pt; margin-top: 6pt; }
+.box { break-inside: avoid; border: 1px solid #cfd8e3; border-radius: 4pt; padding: 4pt 7pt; background: #f7f9fc; }
+.box.wide { grid-column: 1 / -1; }
+.box h3 { font-size: 12.10pt; margin: 0 0 3pt; color: #0b3d5c; }
+.box ul { margin: 0; padding-inline-start: 14pt; }
+.box li { margin-bottom: 1pt; }
+.box code { white-space: nowrap; }
+.box table { margin: 3pt 0 5pt; table-layout: auto; width: auto; }
+.box th { background: #f1dcd9; color: #7a1f17; font-size: 9.90pt; padding: 2pt 8pt; }
+.box td { padding: 2pt 8pt; text-align: left; background: #fff; font-size: 9.24pt; white-space: nowrap; }
+.side { display: grid; grid-template-columns: auto 1fr; gap: 10pt; align-items: start; }
+.pick { border-color: #b7d6b7; background: #f3faf3; }
+.trap { border-color: #e6b9b5; background: #fdf4f3; }
+.legend { border-color: #c9c2e8; background: #f6f4fc; }
+.scale { direction: ltr; text-align: center; font-family: Menlo, Consolas, monospace; font-size: 9.24pt; white-space: nowrap; margin: 2pt 0 4pt; }
+</style>
+</head>
+<body dir="rtl">
+
+<header>
+  <h1>דף עזר: מבני נתונים לראיונות ג'אווה</h1>
+  <span class="sub">סדר · זמן וזיכרון · חיפוש · מתי להשתמש · הערות ראיון</span>
+</header>
+
+<table>
+<colgroup>
+  <col style="width:12.5%"><col style="width:9%"><col style="width:20%"><col style="width:17.5%"><col style="width:41%">
+</colgroup>
+<thead>
+<tr><th>מבנה</th><th>סדר</th><th>סיבוכיות</th><th>מתי להשתמש</th><th>הערות ראיון</th></tr>
+</thead>
+<tbody>
+
+<tr class="grp"><td colspan="5">רשימות ותורים</td></tr>
+<tr>
+  <td class="name"><span class="c">int[] / T[]</span><small>מערך</small></td>
+  <td>לפי מיקום</td>
+  <td class="cx"><div><i>get</i><span class="good">O(1)</span></div><div><i>find</i><span>O(n)<br>sorted: O(log&nbsp;n)</span></div><div><i>add/del</i><span class="bad">O(n)<br>fixed size</span></div></td>
+  <td>הגודל ידוע מראש. טבלה של תוצאות ביניים. ספירה לפי אות: מערך של 26 תאים.</td>
+  <td>הגודל קבוע לתמיד. <code>==</code> בודק אם זה <b>אותו מערך</b> בזיכרון, לא אם התוכן שווה. להשוואת תוכן: <code>Arrays.equals</code>. גם <code>Arrays.asList</code> מחזיר רשימה בגודל קבוע: הוספה זורקת חריגה.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">ArrayList</span><small>מערך שגדל לבד</small></td>
+  <td>לפי מיקום</td>
+  <td class="cx"><div><i>get</i><span class="good">O(1)</span></div><div><i>find</i><span>O(n)</span></div><div><i>add/del</i><span>end O(1)*<br>mid O(n)</span></div></td>
+  <td>ברירת המחדל לרשימה. קוראים הרבה לפי מיקום.</td>
+  <td>מערך מלא מוחלף במערך גדול פי 1.5. מלכודת ברשימת מספרים: <code>remove(1)</code> מוחק את מקום 1, ו־<code>remove(Integer.valueOf(1))</code> מוחק את הערך 1. מחיקה בתוך for-each זורקת <code>ConcurrentModificationException</code>. במקום: <code>removeIf</code>.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">LinkedList</span><small>רשימה מקושרת כפולה</small></td>
+  <td>סדר הכנסה</td>
+  <td class="cx"><div><i>get</i><span class="bad">O(n)</span></div><div><i>find</i><span>O(n)</span></div><div><i>add/del</i><span>ends O(1)</span></div><div><i>mem</i><span>O(n) +2 ptr</span></div></td>
+  <td>מוסיפים ומוחקים הרבה באמצע, תוך כדי מעבר על הרשימה.</td>
+  <td>כל איבר יושב במקום אחר בזיכרון ומצביע לשכנים שלו. לכן <code>get(i)</code> הולך צעד אחרי צעד. למה <code>ArrayList</code> מהיר יותר בפועל? האיברים שלו צמודים בזיכרון, והמעבד קורא זיכרון צמוד מהר.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">ArrayDeque</span><small>תור עם שני קצוות: מחסנית וגם תור</small></td>
+  <td>סדר הכנסה</td>
+  <td class="cx"><div><i>get</i><span>ends O(1)</span></div><div><i>find</i><span>O(n)</span></div><div><i>add/del</i><span>ends O(1)*</span></div></td>
+  <td>מחסנית (ערימת צלחות): סוגריים, סריקה לעומק. תור (תור בקופה): סריקה לרוחב.</td>
+  <td>זה המחליף של <code>Stack</code> הישן. <code>Stack</code> יורש מ־<code>Vector</code>, ולכן: כל פעולה נועלת מנעול, ואפשר אפילו להכניס איבר לאמצע המחסנית. גם ההדפסה הפוכה: <code>Stack</code> מדפיס מלמטה למעלה, <code>ArrayDeque</code> מלמעלה למטה. אסור <code>null</code>. מחסנית: <code>push/pop/peek</code>. תור: <code>offer/poll/peek</code>.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">Priority<wbr>Queue</span><small>ערימה: עץ שנשמר בתוך מערך</small></td>
+  <td>רק הראשון מובטח (הקטן). <span class="warn">מעבר לא ממוין!</span></td>
+  <td class="cx"><div><i>get</i><span class="good">peek O(1)</span></div><div><i>find</i><span>O(n)</span></div><div><i>add/del</i><span>offer/poll O(log&nbsp;n)<br>remove(x) O(n)</span></div></td>
+  <td>K הגדולים ביותר. איחוד K רשימות ממוינות. מסלול קצר עם משקלים (דייקסטרה). חציון של זרם מספרים.</td>
+  <td>ברירת המחדל: הקטן בראש. הגדול בראש: <code>Comparator.reverseOrder()</code>. המשווה <code>(a,b)-&gt;a-b</code> נשבר במספרים גדולים (החיסור עובר את הגבול של <code>int</code>). במקום: <code>Integer.compare</code>. ל־K הגדולים: ערימה של K איברים בלבד, <code>O(n log k)</code>.</td>
+</tr>
+
+<tr class="grp"><td colspan="5">מפות וקבוצות <span>(מחפשים לפי מפתח, לא לפי מיקום)</span></td></tr>
+<tr>
+  <td class="name"><span class="c">HashMap</span><small>מערך של מגירות: <code>bucket</code></small></td>
+  <td>אין סדר</td>
+  <td class="cx"><div><i>find</i><span class="good">O(1) avg<br>worst O(log&nbsp;n)</span></div><div><i>add/del</i><span class="good">O(1) avg</span></div></td>
+  <td>ספירה כמה פעמים כל דבר מופיע. Two Sum. שמירת תוצאות שכבר חושבו. קיבוץ לפי מפתח.</td>
+  <td><code>hashCode</code> קובע לכל מפתח מספר מגירה. לכן דורסים <code>equals</code> ו־<code>hashCode</code> תמיד יחד. מפתח שמשתנה אחרי <code>put</code> לא נמצא יותר. כש־75% מהמגירות תפוסות, המערך מוכפל. מגירה עם 8 פריטים הופכת לעץ (כשיש 64 מגירות ומעלה), ולכן הגרוע הוא <code>O(log n)</code>. לא בטוח לכמה חוטים.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">LinkedHash<wbr>Map</span><small>מפת גיבוב עם שרשרת לפי סדר</small></td>
+  <td>סדר הכנסה (או סדר השימוש)</td>
+  <td class="cx"><div><i>find</i><span class="good">O(1) avg</span></div><div><i>add/del</i><span class="good">O(1) avg</span></div><div><i>mem</i><span>O(n) +2 ptr</span></div></td>
+  <td>מטמון שזורק את מה שלא השתמשו בו הכי הרבה זמן (LRU). פלט באותו סדר כמו הקלט.</td>
+  <td>זה <code>HashMap</code> רגיל עם אותו מערך מגירות. כל פריט מקבל עוד שני מצביעים: לפריט שנכנס לפניו ולפריט שנכנס אחריו. כך נוצרת שרשרת לפי סדר ההכנסה. אין רשימה נפרדת: אותו פריט נמצא במגירה וגם בשרשרת. מטמון LRU: <code>new LinkedHashMap&lt;&gt;(16, 0.75f, true)</code> ודריסה של <code>removeEldestEntry</code>.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">TreeMap</span><small>עץ שמאזן את עצמו (אדום־שחור)</small></td>
+  <td>ממוין לפי מפתח</td>
+  <td class="cx"><div><i>get</i><span>first/last O(log&nbsp;n)</span></div><div><i>find</i><span>O(log&nbsp;n)</span></div><div><i>add/del</i><span>O(log&nbsp;n)</span></div></td>
+  <td>שאלות על טווח: כל המפתחות בין 10 ל־20. המפתח הקרוב ביותר. פגישות ולוחות זמנים.</td>
+  <td>פעולות שאין ב־<code>HashMap</code>: <code>floorKey</code> (הכי גדול שהוא קטן או שווה), <code>ceilingKey</code> (הכי קטן שהוא גדול או שווה), <code>headMap, tailMap</code>. מפתח <code>null</code> זורק חריגה. מלכודת: אם <code>compareTo</code> מחזיר 0, המפה חושבת שזה <b>אותו מפתח</b>, גם אם <code>equals</code> אומר שהם שונים.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">HashSet<br>LinkedHash<wbr>Set</span><small>קבוצה בלי כפילויות</small></td>
+  <td>אין סדר<br>/ סדר הכנסה</td>
+  <td class="cx"><div><i>find</i><span class="good">O(1) avg</span></div><div><i>add/del</i><span class="good">O(1) avg</span></div></td>
+  <td>הסרת כפילויות. "כבר ביקרתי כאן?". בדיקה אם משהו קיים.</td>
+  <td>בפנים זה <code>HashMap</code> שמשתמש רק במפתחות. <code>add</code> מחזיר <code>false</code> אם האיבר כבר היה: דרך קצרה לגלות כפילות.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">TreeSet</span><small>קבוצה ממוינת</small></td>
+  <td>ממוין</td>
+  <td class="cx"><div><i>get</i><span>first/last O(log&nbsp;n)</span></div><div><i>find</i><span>O(log&nbsp;n)</span></div><div><i>add/del</i><span>O(log&nbsp;n)</span></div></td>
+  <td>קבוצה שנשארת ממוינת תוך כדי שינויים. הערך הקרוב ביותר ל־x.</td>
+  <td>בפנים זה <code>TreeMap</code>. פעולות: <code>floor, ceiling, pollFirst</code>. אותה מלכודת של <code>compareTo</code>.</td>
+</tr>
+
+<tr class="grp brk"><td colspan="5">כמה חוטים בו־זמנית <span>(חוט = <code>thread</code>, נתיב ריצה נפרד. התוכנית מריצה כמה חוטים באותו רגע, וכולם נוגעים באותו מבנה)</span></td></tr>
+<tr>
+  <td class="name"><span class="c">Concurrent<wbr>HashMap</span><small>מפה שמותר לשתף בין חוטים</small></td>
+  <td>אין סדר</td>
+  <td class="cx"><div><i>find</i><span class="good">O(1) avg</span></div><div><i>add/del</i><span class="good">O(1) avg</span></div></td>
+  <td>מטמון משותף. מונים שכמה חוטים מעדכנים.</td>
+  <td>ניסוי: 10 חוטים הוסיפו 1 למונה 100,000 פעמים. <code>HashMap</code> הגיע לכ־16,000, כי חוטים דרסו זה את זה. כאן, עם <code>merge</code>: בדיוק 100,000. כל כתיבה נועלת רק מגירה אחת. מלכודת: <code>get</code> ואז <code>put</code> הם שני צעדים, וחוט אחר נכנס ביניהם. במקום: <code>merge</code> או <code>compute</code>. אסור <code>null</code>.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">CopyOnWrite<wbr>ArrayList</span><small>מעתיקה את עצמה בכל שינוי</small></td>
+  <td>לפי מיקום</td>
+  <td class="cx"><div><i>get</i><span class="good">O(1)</span></div><div><i>find</i><span>O(n)</span></div><div><i>add/del</i><span class="bad">O(n) copy</span></div></td>
+  <td>כמה חוטים, הרבה קריאות ומעט שינויים. למשל רשימת מאזינים לאירועים.</td>
+  <td>כל שינוי יוצר עותק חדש של כל המערך. מי שעובר על הרשימה רואה את המצב מהרגע שהתחיל, ולכן לא נזרקת חריגה.</td>
+</tr>
+
+<tr class="grp"><td colspan="5">מבנים שכותבים לבד בראיון</td></tr>
+<tr>
+  <td class="name"><span class="c">TreeNode (BST)</span><small>עץ בינארי / עץ חיפוש</small></td>
+  <td>מעבר שמאל, שורש, ימין נותן סדר ממוין</td>
+  <td class="cx"><div><i>find</i><span>O(h)</span></div><div><i>add/del</i><span>O(h)</span></div><div><i>mem</i><span>O(n) +stack O(h)</span></div></td>
+  <td>שאלות רקורסיה. בדיקה אם עץ חיפוש תקין. האב המשותף של שני צמתים.</td>
+  <td>עץ חיפוש: כל מה שמשמאל קטן, כל מה שמימין גדול. אם מכניסים מספרים ממוינים, העץ נהיה שרשרת ארוכה, והחיפוש <code>O(n)</code>. לכן <code>TreeMap</code> מאזן את עצמו. בדיקת תקינות: מעבירים לכל צומת טווח מותר, לא רק משווים להורה. עץ עמוק מאוד: <code>StackOverflowError</code>.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">Trie</span><small>עץ תחיליות</small></td>
+  <td>לפי א"ב</td>
+  <td class="cx"><div><i>find</i><span class="good">O(L)</span></div><div><i>add/del</i><span class="good">O(L)</span></div><div><i>mem</i><span>O(total&nbsp;chars)</span></div></td>
+  <td>השלמה אוטומטית: מקלידים ca ומקבלים cat, car. בדיקת איות. חיפוש הרבה מילים בלוח אותיות.</td>
+  <td>כל קו בעץ הוא אות. מילים עם אותה התחלה חולקות דרך: <code>cat</code> ו־<code>car</code> עוברות שתיהן ב־c ואז a. סוף מילה מסומן בדגל <code>isEnd</code>. <code>HashSet</code> עונה רק על "car היא מילה?". <code>Trie</code> עונה גם על "יש מילה שמתחילה ב־ca?", בזמן <code>O(L)</code>, בלי לעבור על כל המילים.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">Graph</span><small>רשימת שכנים או טבלה</small></td>
+  <td>אין סדר</td>
+  <td class="cx"><div><i>get</i><span>edge? O(deg)</span></div><div><i>find</i><span>BFS/DFS O(V+E)</span></div><div><i>add/del</i><span>O(1) / O(deg)</span></div><div><i>mem</i><span>O(V+E)</span></div></td>
+  <td>רשתות וחברים. סדר ביצוע של משימות שתלויות זו בזו. מסלול קצר ביותר.</td>
+  <td>בג'אווה: <code>List&lt;List&lt;Integer&gt;&gt;</code>, רשימת שכנים לכל צומת. תמיד שומרים קבוצת "ביקרתי", אחרת מסתובבים במעגל. מעט קשתות: רשימה. הרבה קשתות: טבלה (בדיקת קשת <code>O(1)</code>, אבל זיכרון <code>O(V²)</code>). סריקה לרוחב (BFS) מוצאת מסלול קצר רק כשלכל הקשתות אותו משקל. עם משקלים שונים: דייקסטרה.</td>
+</tr>
+<tr>
+  <td class="name"><span class="c">Union-Find</span><small>מי באותה קבוצה?</small></td>
+  <td>אין סדר</td>
+  <td class="cx"><div><i>find</i><span class="good">O(α(n))&nbsp;≈&nbsp;O(1)</span></div><div><i>add/del</i><span class="good">union O(α(n))</span></div></td>
+  <td>כמה קבוצות מחוברות יש? האם קשת חדשה סוגרת מעגל?</td>
+  <td>לכל איבר יש "בוס". <code>find</code> מטפס עד הבוס העליון. <code>union</code> מחבר שני בוסים. שני שיפורים הופכים אותו למהיר: כל איבר מצביע ישר לבוס העליון, והקבוצה הקטנה נתלית על הגדולה. בלי שניהם: <code>O(n)</code>.</td>
+</tr>
+</tbody>
+</table>
+
+<div class="boxes">
+  <div class="box trap wide">
+    <h3>מלכודות שחוזרות בראיונות</h3>
+    <div>מחלקות ישנות: כל פעולה נועלת מנעול, גם כשאין צורך. במה להשתמש במקום, לפי כמה חוטים נוגעים במבנה:</div>
+    <div class="side">
+    <table>
+      <tr><th>ישן</th><th>רק חוט אחד נוגע</th><th>כמה חוטים ביחד</th></tr>
+      <tr><td class="c">Hashtable</td><td class="c">HashMap</td><td class="c">ConcurrentHashMap</td></tr>
+      <tr><td class="c">Vector</td><td class="c">ArrayList</td><td class="c">CopyOnWriteArrayList</td></tr>
+      <tr><td class="c">Stack</td><td class="c">ArrayDeque</td><td class="c">ConcurrentLinkedDeque</td></tr>
+    </table>
+    <ul>
+      <li><code>Integer</code> עם <code>==</code> עובד רק בין ‎-128 ל־127. מעל זה: <code>false</code>. תמיד <code>equals</code>.</li>
+      <li><code>List.of</code> ו־<code>Map.of</code>: אי אפשר לשנות אותם, ו־<code>null</code> זורק חריגה.</li>
+      <li>מיון מספרים (<code>int[]</code>) לא שומר על סדר של שווים. מיון אובייקטים שומר. שניהם <code>O(n log n)</code>.</li>
+    </ul>
+    </div>
+  </div>
+  <div class="box pick">
+    <h3>איך בוחרים מבנה?</h3>
+    <ul>
+      <li>מפתח ← ערך: <code>HashMap</code>. בסדר הכנסה: <code>LinkedHashMap</code>. ממוין או טווחים: <code>TreeMap</code>.</li>
+      <li>רק "האם קיים?": <code>HashSet</code>. ממוין: <code>TreeSet</code>.</li>
+      <li>גישה לפי מיקום: <code>ArrayList</code>. גודל קבוע: מערך.</li>
+      <li>מחסנית או תור: <code>ArrayDeque</code>.</li>
+      <li>צריך כל הזמן את הקטן או הגדול: <code>PriorityQueue</code>.</li>
+      <li>התחלות של מילים: <code>Trie</code>. קבוצות שמתאחדות: <code>Union-Find</code>.</li>
+      <li>כמה חוטים כותבים: <code>ConcurrentHashMap</code>.</li>
+    </ul>
+  </div>
+  <div class="box legend">
+    <h3>מקרא</h3>
+    <div class="scale">O(1) &lt; O(α(n)) &lt; O(log n) &lt; O(n) &lt; O(n log n) &lt; O(n²)</div>
+    <ul>
+      <li><code>O(1)</code> = מהיר תמיד, לא משנה כמה איברים. <code>O(n)</code> = עובר על הכול.</li>
+      <li><code>*</code> = לפעמים פעולה אחת יקרה (הגדלת מערך), אבל בממוצע <code>O(1)</code>.</li>
+      <li><code>get</code> גישה לפי מיקום או ראש · <code>find</code> חיפוש לפי ערך או מפתח · <code>add/del</code> הוספה ומחיקה · <code>mem</code> זיכרון.</li>
+      <li><code>avg</code> ממוצע · <code>worst</code> הכי גרוע · <code>ends</code> בקצוות · <code>mid</code> באמצע.</li>
+      <li><code>n</code> איברים · <code>L</code> אורך מילה · <code>V</code> צמתים (נקודות) · <code>E</code> קשתות (קווים) · <code>h</code> גובה העץ (במאוזן <code>log n</code>, במקרה הגרוע <code>n</code>) · <code>k</code> גודל הערימה · <code>deg</code> מספר שכנים.</li>
+      <li><code>α(n)</code> גדל כל כך לאט, שבפועל הוא לא עובר את 4.</li>
+      <li>אין שורת <code>get</code> = אין גישה לפי מיקום. אין שורת <code>mem</code> = הזיכרון הוא <code>O(n)</code>.</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>

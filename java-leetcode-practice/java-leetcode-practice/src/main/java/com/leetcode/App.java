@@ -40,19 +40,23 @@ public class App {
         //explaining the different between orElse and orElseGet:
 
         //Optional<Order> found = Optional.of(new Order("Ada", 1, 1.0));
-        Optional<Order> found = Optional.empty();
+    //     Optional<Order> found = Optional.empty();
 
-        System.out.println("--- before orElse ---");
-        Order aa = found.orElse(buildDefault());
-        System.out.println("aa = " + aa);
+    //     System.out.println("--- before orElse ---");
+    //     Order aa = found.orElse(buildDefault());
+    //     System.out.println("aa = " + aa);
 
-        System.out.println("--- before orElseGet ---");
-        Order bb = found.orElseGet(() -> buildDefault());
-        System.out.println("bb = " + bb);
-    }
+    //     System.out.println("--- before orElseGet ---");
+    //     Order bb = found.orElseGet(() -> buildDefault());
+    //     System.out.println("bb = " + bb);
+    // }
 
-    static Order buildDefault() {
-        System.out.println("building default...");
-        return new Order("nobody", 0, 0.0);
+    // static Order buildDefault() {
+    //     System.out.println("building default...");
+    //     return new Order("nobody", 0, 0.0);
+
+        int x = 128;
+        Integer a = 128;
+        System.out.println(x == a.intValue());
     }
 }
